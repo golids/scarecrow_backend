@@ -6,15 +6,16 @@ from .models import UserProfile, Device, BirdDetection, ActivityLog
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['full_name', 'contact_number', 'province', 'municipality', 'barangay']
+        fields = ['id', 'full_name', 'contact_number', 'province', 'municipality', 'barangay']
 
 
 class UserSerializer(serializers.ModelSerializer):
     profile = UserProfileSerializer(read_only=True)
+    full_name = serializers.CharField(source='profile.full_name', read_only=True)
     
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'profile']
+        fields = ['id', 'username', 'full_name', 'email', 'profile']
 
 
 class RegisterSerializer(serializers.Serializer):

@@ -20,8 +20,16 @@ def register(request):
     if serializer.is_valid():
         user = serializer.save()
         refresh = RefreshToken.for_user(user)
+        
+        # Get full name from profile
+        full_name = user.profile.full_name if hasattr(user, 'profile') else user.username
+        
         return Response({
-            'user': UserSerializer(user).data,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'full_name': full_name,
+            },
             'access': str(refresh.access_token),
             'refresh': str(refresh)
         }, status=status.HTTP_201_CREATED)
@@ -37,8 +45,16 @@ def login(request):
     
     if user:
         refresh = RefreshToken.for_user(user)
+        
+        # Get full name from profile
+        full_name = user.profile.full_name if hasattr(user, 'profile') else user.username
+        
         return Response({
-            'user': UserSerializer(user).data,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'full_name': full_name,
+            },
             'access': str(refresh.access_token),
             'refresh': str(refresh)
         })
@@ -48,7 +64,12 @@ def login(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def current_user(request):
-    return Response(UserSerializer(request.user).data)
+    full_name = request.user.profile.full_name if hasattr(request.user, 'profile') else request.user.username
+    return Response({
+        'id': request.user.id,
+        'username': request.user.username,
+        'full_name': full_name,
+    })
 
 
 class DeviceViewSet(viewsets.ModelViewSet):
