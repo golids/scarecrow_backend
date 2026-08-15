@@ -6,8 +6,8 @@ Django REST Framework backend for IoT Field Scarecrow Bird Detection System.
 ## Quick Start
 ```bash
 python -m pip install -r requirements.txt
-python manage.py makemigrations
 pip install django-cors-headers
+python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
